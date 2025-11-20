@@ -34,6 +34,7 @@ const cookieParser = require('cookie-parser');
     server.use(require('../routes/createUser'))
     server.use(require('../routes/login'))
     server.use(require('../routes/logout'))
+    server.use(require('../routes/resetPassword'))
 
     process.on('exit', () => console.log("Server was forced to exit."))
 // }

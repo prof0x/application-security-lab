@@ -115,11 +115,29 @@ Again, everything outside of the &&'s will preserve our sytax so we can force th
 
 11. Refresh the page and confirm that the site is no longer available. Go back to your github codespace and confirm that the messages "`all your base are belong to us`" and "`Server was forced to exit.`" appear in your terminal.
 
-``` 
+```
 Deliverable #4: Submit a screenshot of the terminal window in your codespace.
 ```
 
 ### Congrats you just hacked yourself! 🐱‍👤
+
+## 🔓 Bonus: Takeover any account with the insecure password reset feature
+To make the lab even juicier, the app now ships with a "Reset Password" page that blindly trusts whatever username you provide. The handler never verifies ownership of the account—it simply overwrites the stored password and logs you in automatically. That makes it trivial to seize any account (including the seeded `Student` account) without knowing the old password.
+
+### How to exploit it
+1. From the login page, click **Forgot or reset password** (or browse directly to `/pages/resetPassword.html`).
+2. Enter **Student** as the username and choose any new password you want.
+3. Submit the form. The server will reset the password without sending an email or asking for proof of identity, set a session cookie, and drop you straight onto the dashboard as the hijacked user.
+4. Log out, then log back in with `Student` and the new password you chose to confirm the takeover.
+
+``` 
+Deliverable #5: Screenshot showing a successful login as Student after using the reset page to change the password.
+```
+
+### How to patch it
+- Treat password resets as a privileged workflow. Require a time-limited, signed reset token tied to the user’s identity (e.g., delivered via email or SMS) before allowing any password change.
+- On the server side, validate the token and the intended username before applying the update. Do **not** auto-login a user just because they changed a password.
+- At minimum for this lab, modify `helpers/resetPassword` to reject unauthenticated callers, require the current password, or verify a reset token stored server-side instead of blindly trusting form input.
 
 ## 🦟 Part 4. Bug Fixes
 In the previous section we identified some very serious vulnerabilities:
