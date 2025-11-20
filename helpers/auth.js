@@ -63,7 +63,24 @@ async function login(username, password) {
     }
 }
 
+// helper function that resets a user's password without verifying their identity
+async function resetPassword(username, newPassword) {
+    // find the user in the array of users
+    const index = users.findIndex((user) => user.username === username)
+
+    // if the user exists index will be a valid index >= 0
+    if (index >= 0) {
+        // overwrite the saved password with whatever the caller provided
+        users[index].password = newPassword
+        return {status: true, message: "Password reset for " + username}
+    }
+
+    // user does not exist, return an error message directly to the caller
+    return {status: false, message: "User does not exist."}
+}
+
 module.exports = {
     createUser,
-    login
+    login,
+    resetPassword
 }
